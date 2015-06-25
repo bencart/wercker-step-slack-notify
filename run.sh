@@ -3,14 +3,7 @@
 USERNAME="\"username\":\"Wercker\","
 AVATAR="\"icon_url\":\"https://avatars3.githubusercontent.com/u/1695193?s=140\","
 
-if [ ! -n "$WERCKER_SLACK_NOTIFY_SUBDOMAIN" ]; then
-# fatal causes the wercker interface to display the error without the need to
-# expand the step
-  error 'Please specify the subdomain property'
-  exit 1
-fi
-
-if [ ! -n "$WERCKER_SLACK_NOTIFY_HOOK_URL" ]; then
+if [ ! -n "$WERCKER_SLACK_NOTIFY_TOKEN" ]; then
   error 'Please specify token property'
   exit 1
 fi

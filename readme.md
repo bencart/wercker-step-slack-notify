@@ -1,4 +1,4 @@
-[![wercker status](https://app.wercker.com/status/558b8846ff40819f061222da/m "wercker status")](https://app.wercker.com/project/bykey/558b8846ff40819f061222da)
+[![wercker status](https://app.wercker.com/status/c1decccd19507e004590d671aa42082b/m "wercker status")](https://app.wercker.com/project/bykey/c1decccd19507e004590d671aa42082b)
 
 # slack-notify
 

@@ -10,13 +10,8 @@ if [ ! -n "$WERCKER_SLACK_NOTIFY_SUBDOMAIN" ]; then
   exit 1
 fi
 
-if [ ! -n "$WERCKER_SLACK_NOTIFY_TOKEN" ]; then
+if [ ! -n "$WERCKER_SLACK_NOTIFY_HOOK_URL" ]; then
   error 'Please specify token property'
-  exit 1
-fi
-
-if [ ! -n "$WERCKER_SLACK_NOTIFY_CHANNEL" ]; then
-  error 'Please specify a channel'
   exit 1
 fi
 
@@ -53,6 +48,12 @@ if [ "$WERCKER_RESULT" = "passed" ]; then
   export WERCKER_SLACK_NOTIFY_MESSAGE="$WERCKER_SLACK_NOTIFY_PASSED_MESSAGE"
 else
   export WERCKER_SLACK_NOTIFY_MESSAGE="$WERCKER_SLACK_NOTIFY_FAILED_MESSAGE"
+  if [ -n "$WERCKER_SLACK_NOTIFY_ICON_EMOJI_FAILED" ]; then
+    AVATAR="\"icon_emoji\":\"$WERCKER_SLACK_NOTIFY_ICON_EMOJI_FAILED\","
+  fi
+  if [ -n "$WERCKER_SLACK_NOTIFY_ICON_URL_FAILED" ]; then
+    AVATAR="\"icon_url\":\"$WERCKER_SLACK_NOTIFY_ICON_URL_FAILED\","
+  fi  
 fi
 
 
@@ -65,7 +66,7 @@ fi
 
 json="{\"channel\": \"$WERCKER_SLACK_NOTIFY_CHANNEL\", $USERNAME $AVATAR \"text\": \"$WERCKER_SLACK_NOTIFY_MESSAGE\"}"
 
-RESULT=`curl -s -d "payload=$json" "https://$WERCKER_SLACK_NOTIFY_SUBDOMAIN.slack.com/services/hooks/incoming-webhook?token=$WERCKER_SLACK_NOTIFY_TOKEN" --output $WERCKER_STEP_TEMP/result.txt -w "%{http_code}"`
+RESULT=`curl -s -d "payload=$json" "https://hooks.slack.com/services/$WERCKER_SLACK_NOTIFY_TOKEN" --output $WERCKER_STEP_TEMP/result.txt -w "%{http_code}"`
 
 if [ "$RESULT" = "500" ]; then
   if grep -Fqx "No token" $WERCKER_STEP_TEMP/result.txt; then
@@ -85,10 +86,10 @@ if [ "$RESULT" = "500" ]; then
   fi
 
   # Unhandled error
-  # fatal <$WERCKER_STEP_TEMP/result.txt
+  fatal <$WERCKER_STEP_TEMP/result.txt
 fi
 
 if [ "$RESULT" = "404" ]; then
-  error "Subdomain or token not found."
+  error "Token not found."
   exit 1
 fi

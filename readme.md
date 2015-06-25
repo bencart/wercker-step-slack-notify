@@ -6,14 +6,12 @@ Send a message to a [Slack Channel](https://slack.com/).
 
 ### required
 
-* `token` - Your Slack token.
-* `channel` - The channel name of the Slack Channel (without the #).
-* `subdomain` - The slack subdomain.
+* `token` - The trailing part of the incoming web hook url
 
 You can create a slack token by going to the account page on your slack domain:
 `<your-subdomain>.slack.com/services` and click 'add New Integration' and select
-'incoming webhooks'. Copy your token (as can be found in the example curl
-command) and don't forget to click 'Add Integration'.
+'incoming webhooks'. Copy the part of the url after https://hooks.slack.com/services/
+to use as your token
 
 This token can be used directly in the wercker.yml (not
 recommended) or better: as an environment variable. You can add environment
@@ -25,7 +23,9 @@ just as you would normally in a shell script (with a dollar sign in front of it)
 ### optional
 
 * `username` - The bot username.
+* `channel` - The channel to notify.
 * `icon_url` | `icon_emoji` - The icon to use for this bot.
+* `icon_url_failed` | `icon_emoji_failed` - The icon to use for this bot, on a failed build or deploy.
 * `passed_message` - The message which will be shown on a passed build or deploy.
 * `failed_message` - The message which will be shown on a failed build or deploy.
 
@@ -37,12 +37,12 @@ Add `SLACK_TOKEN` as deploy target or application environment variable.
 
     build:
         after-steps:
-            - sherzberg/slack-notify:
-                subdomain: slacksubdomain
+            - crub/slack-notify:
                 token: $SLACK_TOKEN
                 channel: "#general"
                 username: wercker
                 icon_url: https://avatars3.githubusercontent.com/u/1695193?s=140
+                icon_emoji_failed: ":crying_cat_face:"
 
 # License
 
@@ -68,6 +68,12 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Changelog
+
+## 0.0.14
+- got it working
+
+## 0.0.12
+- forked from [sherzberg/slack-notify](https://github.com/sherzberg/wercker-step-slack-notify)
 
 ## 0.0.11
 - added custom passed/failed message
